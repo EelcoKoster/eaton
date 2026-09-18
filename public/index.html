@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Eaton Lights</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Lokale bediening</p>
+        <h1>Eaton Lights</h1>
+        <p class="lede">Bedien je lampen vanaf je telefoon op je thuiswifi.</p>
+      </div>
+      <button id="refreshBtn" class="ghost">Vernieuwen</button>
+    </header>
+
+    <section id="statusCard" class="status-card">
+      Laden...
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Lampen</h2>
+        <span id="deviceCount" class="count"></span>
+      </div>
+      <div id="devices" class="grid"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Scenes</h2>
+      </div>
+      <div id="scenes" class="grid scenes"></div>
+    </section>
+  </main>
+
+  <template id="deviceTemplate">
+    <article class="card device-card">
+      <div class="card-head">
+        <div>
+          <h3 class="device-name"></h3>
+          <p class="device-meta"></p>
+        </div>
+        <span class="badge"></span>
+      </div>
+
+      <div class="button-row">
+        <button class="on-btn">Aan</button>
+        <button class="off-btn secondary">Uit</button>
+      </div>
+
+      <label class="slider-wrap hidden">
+        <span>Dimmen</span>
+        <input class="dim-slider" type="range" min="0" max="100" value="0">
+        <span class="slider-value">0%</span>
+      </label>
+    </article>
+  </template>
+
+  <template id="sceneTemplate">
+    <article class="card scene-card">
+      <div>
+        <h3 class="scene-name"></h3>
+        <p class="scene-meta">Scene</p>
+      </div>
+      <button class="scene-btn">Activeren</button>
+    </article>
+  </template>
+
+  <script src="/app.js"></script>
+</body>
+</html>

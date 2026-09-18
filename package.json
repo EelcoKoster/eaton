@@ -1,0 +1,11 @@
+{
+  "name": "eaton-lights",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "xcomfort-shc-api": "^2.3.0"
+  }
+}
