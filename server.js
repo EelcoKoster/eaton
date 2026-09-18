@@ -27,8 +27,13 @@ let appState = {
 function buildState() {
   const devices = [];
   const scenes = [];
+  const hiddenDeviceTypes = new Set(['BinaryInput']);
 
   for (const [name, info] of xapi.deviceMap.entries()) {
+    if (hiddenDeviceTypes.has(info.type)) {
+      continue;
+    }
+
     devices.push({
       name,
       type: info.type,

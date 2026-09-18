@@ -11,6 +11,32 @@ function setStatus(message, isError = false) {
   statusCard.classList.toggle('error', isError);
 }
 
+function formatDeviceValue(device, value) {
+  if (value === null || value === undefined || value === '') {
+    return '—';
+  }
+
+  if (device.dimmable && Number.isFinite(Number(value))) {
+    return `${Number(value)}%`;
+  }
+
+  return String(value).toUpperCase();
+}
+
+function updateDeviceValue(node, device, value) {
+  const valueEl = node.querySelector('.device-value');
+  const slider = node.querySelector('.dim-slider');
+  const sliderValue = node.querySelector('.slider-value');
+
+  valueEl.textContent = formatDeviceValue(device, value);
+
+  if (device.dimmable && Number.isFinite(Number(value))) {
+    const normalized = String(Number(value));
+    slider.value = normalized;
+    sliderValue.textContent = `${normalized}%`;
+  }
+}
+
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: {
@@ -42,7 +68,7 @@ function renderDevices(devices) {
   devices.forEach((device) => {
     const node = deviceTemplate.content.firstElementChild.cloneNode(true);
     node.querySelector('.device-name').textContent = device.name;
-    node.querySelector('.device-meta').textContent = device.type + (device.value !== undefined ? ` · ${device.value}` : '');
+    node.querySelector('.device-type').textContent = device.type;
     node.querySelector('.badge').textContent = device.dimmable ? 'Dimbaar' : 'Aan/uit';
 
     const onBtn = node.querySelector('.on-btn');
@@ -50,6 +76,8 @@ function renderDevices(devices) {
     const sliderWrap = node.querySelector('.slider-wrap');
     const slider = node.querySelector('.dim-slider');
     const sliderValue = node.querySelector('.slider-value');
+
+    updateDeviceValue(node, device, device.value);
 
     if (device.dimmable) {
       sliderWrap.classList.remove('hidden');
@@ -65,6 +93,7 @@ function renderDevices(devices) {
             method: 'POST',
             body: JSON.stringify({ level: Number(slider.value) })
           });
+          updateDeviceValue(node, device, slider.value);
           setStatus(`Klaar: ${device.name} staat op ${slider.value}%`);
         } catch (error) {
           setStatus(error.message, true);
@@ -76,6 +105,7 @@ function renderDevices(devices) {
       setStatus(`Zet ${device.name} aan...`);
       try {
         await api(`/api/devices/${encodeURIComponent(device.name)}/on`, { method: 'POST' });
+        updateDeviceValue(node, device, 'ON');
         setStatus(`Klaar: ${device.name} aan`);
       } catch (error) {
         setStatus(error.message, true);
@@ -86,6 +116,7 @@ function renderDevices(devices) {
       setStatus(`Zet ${device.name} uit...`);
       try {
         await api(`/api/devices/${encodeURIComponent(device.name)}/off`, { method: 'POST' });
+        updateDeviceValue(node, device, 'OFF');
         setStatus(`Klaar: ${device.name} uit`);
       } catch (error) {
         setStatus(error.message, true);
